@@ -1,3 +1,4 @@
+import time
 def subonefromip(ipnextSubnetnw, octetToModify):
     ipnew =[None] * 4
     if(int(ipnextSubnetnw[3]) == 0):
@@ -53,7 +54,7 @@ def findNetworkAddress(ipAddressaslist, octetToModify, subnetValue):
 
     return network_add, broad_add
 
-print("This program will find if IP address is valid or not")
+print("This program will find the network address and broadcast address of an IP")
 
 while True:
     try:
@@ -68,10 +69,12 @@ while True:
             print("The IP address is valid")
         else:
             print ("Not an valid IP")
+            time.sleep(3)
             exit(0)
 
     except:
         print ("Not an Valid IP")
+        time.sleep(3)
         exit(0)
 
     subnetMask = int(input("Enter the subnet Mask as number ex. /12, /24, /18 (without slash): "))
@@ -97,6 +100,8 @@ while True:
     print("Broadcast address of " + str(ipAddressWithMask) + " is : " + broadcastAddress )
     close = input("Press enter to continue : " )
     if close == "no":
+        print("Thank you")
+        time.sleep(3)
         exit(0)
     else:
         pass
