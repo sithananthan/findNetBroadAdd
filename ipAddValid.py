@@ -1,5 +1,30 @@
+def subonefromip(ipnextSubnetnw, octetToModify):
+    ipnew =[None] * 4
+    if(int(ipnextSubnetnw[3]) == 0):
+        ipnew[3] = str(255)
+        ipnew[2] = str(int(ipnextSubnetnw[2]) - 1)
+        ipnew[1] = ipnextSubnetnw[1]
+        ipnew[0] = ipnextSubnetnw[0]
+    else:
+        ipnew[3] = str(int(ipnextSubnetnw[3]) - 1)
+        ipnew[2] = ipnextSubnetnw[2]
+        ipnew[1] = ipnextSubnetnw[1]
+        ipnew[0] = ipnextSubnetnw[0]
+
+    if(int(ipnew[2]) < 0):
+        ipnew[2] = str(255)
+        ipnew[1] = str(int(ipnextSubnetnw[1]) - 1)
+        ipnew[0] = ipnextSubnetnw[0]
+
+    if(int(ipnew[1]) < 0):
+        ipnew[1] = str(255)
+        ipnew[0] = str(int(ipnextSubnetnw[0]) - 1)
+
+    return ipnew
+
 def findNetworkAddress(ipAddressaslist, octetToModify, subnetValue):
     ipnew = [None] * 4
+
     for i in range(len(ipAddressaslist)):
         if i < (octetToModify - 1):
             ipnew[i] = str(ipAddressaslist[i])
@@ -8,10 +33,25 @@ def findNetworkAddress(ipAddressaslist, octetToModify, subnetValue):
         else:
             ipnew[i] = str(0)
 
+    ipnextSubnetnw = [None] * 4
+    incre = 0
+    for i in range(len(ipAddressaslist)):
+        if i < (octetToModify - 1):
+            ipnextSubnetnw[i] = str(ipAddressaslist[i])
+        elif i == octetToModify - 1:
+            ipnextSubnetnw[i] = str((ipAddressaslist[i]//int(subnetValue)) * int(subnetValue) + int(subnetValue))
+            if int(ipnextSubnetnw[i]) > 255:
+                ipnextSubnetnw[i] = str(0)
+                ipnextSubnetnw[i-1] = str(int(ipnextSubnetnw[i-1]) + 1)
+        else:
+            ipnextSubnetnw[i] = str(0)
+
+    ipnextSubnetnw = subonefromip(ipnextSubnetnw, octetToModify)
+
     network_add = ipnew[0] + "." +ipnew[1] + "." + ipnew[2] + "." + ipnew[3]
+    broad_add = ipnextSubnetnw[0] + "." + ipnextSubnetnw[1] + "." + ipnextSubnetnw[2] + "." + ipnextSubnetnw[3]
 
-    return network_add, "borad"
-
+    return network_add, broad_add
 
 print("This program will find if IP address is valid or not")
 
@@ -28,9 +68,11 @@ while True:
             print("The IP address is valid")
         else:
             print ("Not an valid IP")
+            exit(0)
 
     except:
         print ("Not an Valid IP")
+        exit(0)
 
     subnetMask = int(input("Enter the subnet Mask as number ex. /12, /24, /18 (without slash): "))
 
@@ -49,16 +91,12 @@ while True:
 
     networkAddress, broadcastAddress = findNetworkAddress(ipAddressaslist,octetToModify,subnetValue)
 
-
     print ("Number of subnets " + str(2**octetIndexValue))
     print ("Number of hosts per network " + str(2**(8 - octetIndexValue) - 2))
     print("Network address of " + str(ipAddressWithMask) + " is : " + networkAddress )
     print("Broadcast address of " + str(ipAddressWithMask) + " is : " + broadcastAddress )
-    close = input("Do you want to continue yes/no : " )
-    if close == "yes":
+    close = input("Press enter to continue : " )
+    if close == "no":
         exit(0)
     else:
         pass
-
-    
-
